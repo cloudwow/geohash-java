@@ -30,7 +30,12 @@ public class GeoHashBoundingBoxQuery implements GeoHashQuery, Serializable {
 	private BoundingBox boundingBox;
 
 	public GeoHashBoundingBoxQuery(BoundingBox bbox) {
-		int fittingBits = GeoHashSizeTable.numberOfBitsForOverlappingGeoHash(bbox);
+		int unAdjustedFittingBits =GeoHashSizeTable.numberOfBitsForOverlappingGeoHash(bbox);
+
+		int fittingBits = (unAdjustedFittingBits/5)*5;
+		if(fittingBits!=unAdjustedFittingBits) {
+			fittingBits+=5;
+		}
 		WGS84Point center = bbox.getCenterPoint();
 		GeoHash centerHash = GeoHash.withBitPrecision(center.getLatitude(), center.getLongitude(), fittingBits);
 
